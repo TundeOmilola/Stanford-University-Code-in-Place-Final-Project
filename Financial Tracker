@@ -1,0 +1,75 @@
+import tkinter as tk
+
+def financial_tracker():
+    # User Inputs
+    income = float(input("Enter your monthly income: "))
+    save_percentage = float(input("Enter the percentage of income you want to save: "))
+
+    # Calculate Savings and Spendable Money
+    target_savings = (save_percentage / 100) * income
+    spendable_money = income - target_savings
+    expenses = 0
+    
+    transactions = []  # List to store transactions
+
+    while True:
+        action = input("Enter 't' to add a transaction, 's' to see summary, 'q' to quit: ")
+        if action == 't':
+            amount = float(input("Enter transaction amount: "))
+            transactions.append(amount)
+            expenses += amount
+            spendable_money -= amount
+
+            # Check savings status
+            if spendable_money < 0:
+                print("Hi, if you continue like this, you may not be able to achieve your saving target.")
+            else:
+                print("Great! You are on track to meet your saving target.")
+            
+            # Update on spending and remaining amount
+            spent_percentage = (expenses / income) * 100
+            print(f"Hi, you have spent {spent_percentage:.2f}% of your budget and you have {spendable_money:.2f} amount left.")
+        
+        elif action == 's':
+            # Financial Summary
+            spent_percentage = (expenses / income) * 100
+            amount_left = spendable_money
+            savings_shortfall = target_savings - (income - expenses)
+            
+            print("\n--- Financial Summary ---")
+            print(f"Income: {income:.2f}")
+            print(f"Target Savings: {target_savings:.2f}")
+            print(f"Total Expenses: {expenses:.2f}")
+            print(f"Spent Percentage: {spent_percentage:.2f}%")
+            print(f"Amount Left: {amount_left:.2f}")
+            
+            if savings_shortfall > 0:
+                print(f"Savings Shortfall: {savings_shortfall:.2f}")
+                print("You may need to cut down on your expenses to meet your saving target.")
+            else:
+                print("You are on track to meet your saving target.")
+        
+        elif action == 'q':
+            break
+    
+    # Draw the financial summary using tkinter canvas
+    root = tk.Tk()
+    canvas = tk.Canvas(root, width=400, height=300)
+    canvas.pack()
+    
+    # Draw income
+    canvas.create_text(200, 20, text=f"Income: {income:.2f}", font=('Helvetica', 14))
+    canvas.create_rectangle(50, 50, 350, 80, fill='green')
+    
+    # Draw target savings
+    canvas.create_text(200, 100, text=f"Target Savings: {target_savings:.2f}", font=('Helvetica', 14))
+    canvas.create_rectangle(50, 130, 350 * (target_savings / income), 160, fill='blue')
+    
+    # Draw expenses
+    canvas.create_text(200, 180, text=f"Total Expenses: {expenses:.2f}", font=('Helvetica', 14))
+    canvas.create_rectangle(50, 210, 350 * (expenses / income), 240, fill='red')
+    
+    root.mainloop()
+
+# Run the financial tracker
+financial_tracker()
